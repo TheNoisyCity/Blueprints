@@ -9,7 +9,7 @@ Close your eyes and listen to the noisy city.
 
 Enums in this project use `Int` as its base class, while generally won't use `0` or any number below 0`.
 
-####Channels
+#### Channel
 
 User can determine which channel to listen. Current avaliable channels are:
 
@@ -19,6 +19,59 @@ User can determine which channel to listen. Current avaliable channels are:
 + `4` **新街与旧闻  Voices from Localfolks** Folks from where you are, while far away from home
 + `5` **过往与当下  Voices from Past** same day in last year
 
+#### Language
+
+Sould we make Cantonese a language instead of a dialect?
+
++ `1` **Madarin**
++ `2` **Cantonese** Just a placeholder
++ `3` **English** Not available now
+
+#### Report Reason
+
++ `1` **Rude**
++ `2` **Pornographic**
++ `3` **Meaningless**
+
+## Database Tables
+
+#### User
+
+In `MySQL`
+
++ `uid` `primary key`
++ `username` its a nickname, can be edited, but not within a short period
++ `password` encrypted password, maybe with bcrypt
++ `email`
++ `email_confirmed` `bool`
++ `phone`
++ `phone_confirmed` `bool`
++ `create_time` all the time we store in database should be timestamp
++ `last_time_username_changed` timestamp
++ `language_first` mother tongue, see Language under Enums
++ `language_second`
++ `dialect_first` `geopoint`
++ `dialect_second` `geopoint`
+
+#### Record
+
++ `rid` `primary key`
++ `create_user`
++ `create_time`
++ `duration`
++ `upload_position`
++ `language`
++ `dialect` `geopoint`
++ 
+
+#### Report
+
++ `report_id` `primary key`
++ `rid`
++ `reporter`
++ `reportee`
++ `report_time` `timestamp`
++ `reason`
 
 
 ## Questions Collection [/questions]
