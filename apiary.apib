@@ -27,6 +27,8 @@ Sould we make Cantonese a language instead of a dialect?
 + `2` **Cantonese** Just a placeholder
 + `3` **English** Not available now
 
+#### TagType
+
 #### Report Reason
 
 + `1` **Rude**
@@ -37,8 +39,6 @@ Sould we make Cantonese a language instead of a dialect?
 
 #### User
 
-In `MySQL`
-
 + `uid` `primary key`
 + `username` its a nickname, can be edited, but not within a short period
 + `password` encrypted password, maybe with bcrypt
@@ -46,6 +46,8 @@ In `MySQL`
 + `email_confirmed` `bool`
 + `phone`
 + `phone_confirmed` `bool`
++ `bio` simple discription for self
++ `avatar_path` lead this to aliyun's oss
 + `create_time` all the time we store in database should be timestamp
 + `last_time_username_changed` timestamp
 + `language_first` mother tongue, see Language under Enums
@@ -53,18 +55,48 @@ In `MySQL`
 + `dialect_first` `geopoint`
 + `dialect_second` `geopoint`
 
-#### Record
+#### Tag
 
-In `OSS`
+User can tag themselves. 
+
++ `uid`
++ `tag_type` music or movie... or custom
++ `value`
+
+#### Record
 
 + `rid` `primary key`
 + `create_user`
 + `create_time`
-+ `duration`
++ `discription`
++ `duration` `int`
 + `upload_position`
 + `language`
 + `dialect` `geopoint`
-+ 
++ `oss_path` lead this to aliyun's oss
+
+#### Comment
+
++ `rid`
++ `cid`
++ `commenter_id`
++ `reply_to_uid`
++ `reply_to_cid` Comment tree can only be 2 in depth
+
+#### Like
+
++ `rid`
++ `uid`
++ `create_time`
+
+#### Hark
+
+Not core function, just count how long one person have listened on another person
+
++ `listener_id`
++ `listenee_id`
++ `rid`
++ `duration` `int`
 
 #### Report
 
