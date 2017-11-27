@@ -27,7 +27,16 @@ Sould we make Cantonese a language instead of a dialect?
 + `2` **Cantonese** Just a placeholder
 + `3` **English** Not available now
 
+#### MessageType
+
++ `1` **Text**
++ `2` **Vioce**
++ `3` **Picture**
++ `4` **Video**
+
 #### TagType
+
++ `1` **Custom**
 
 #### Report Reason
 
@@ -39,82 +48,118 @@ Sould we make Cantonese a language instead of a dialect?
 
 #### User
 
-+ `uid` `primary key`
-+ `username` its a nickname, can be edited, but not within a short period
-+ `password` encrypted password, maybe with bcrypt
-+ `email`
-+ `email_confirmed` `bool`
-+ `phone`
-+ `phone_confirmed` `bool`
-+ `bio` simple discription for self
-+ `avatar_path` lead this to aliyun's oss
-+ `create_time` all the time we store in database should be timestamp
-+ `last_time_username_changed` timestamp
-+ `language_first` mother tongue, see Language under Enums
-+ `language_second`
-+ `dialect_first` `geopoint`
-+ `dialect_second` `geopoint`
+```sql
+CREATE TABLE IF NOT EXISTS `user` (
+    `uid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
+    `username` VARCHAR(64) NOT NULL COMMENT 'nickname can be edited, but not within a short period',
+    `password` VARCHAR(128) NOT NULL COMMENT 'encrypted password, maybe with bcrypt',
+    `email` VARCHAR(64),
+    `email_confirmed` BOOL NOT NULL,
+    `phone` VARCHAR(16),
+    `phone_confirmed` BOOL NOT NULL,
+    `bio` VARCHAR(512) COMMENT 'simple discription for self',
+    `avatar_path` VARCHAR(64) COMMENT 'maybe lead this to aliyun's oss',
+    `create_time` TIMESTAMP NOT NULL,
+    `last_time_username_changed` TIMESTAMP NOT NULL,
+    `language_first` TINYINT NOT NULL COMMENT 'mother tongue, see Language under Enums',
+    `language_second` TINYINT NOT NULL,
+    `dialect_first` POINT COMMENT 'GCJ-02 for Chinese server, WCG-84 for overseas',
+    `dialect_second` POINT NOT,
+    PRIMARY KEY (`uid`)
+)
+```
 
 #### Tag
 
 User can tag themselves. 
 
-+ `uid`
-+ `tag_type` music or movie... or custom
-+ `value`
+CREATE TABLE IF NOT EXISTS `tag` (
+    `uid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
+    `tag_type` TINYINT NOT NULL COMMENT 'see TagType in Enums',
+    `value` VARCHAR(256) NOT NULL
+)
+
+#### Medal
+
+Like achievements in Steam. We may need a schema file too generate description in the backend project.
+
+CREATE TABLE IF NOT EXISTS `medal` (
+    `uid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
+    `title` VARCHAR(32) NOT NULL,
+    `award_time` TIMESTAMP NOT NULL,
+    `description` VARCHAR(256) NOT NULL
+)
+
 
 #### Record
 
-+ `rid` `primary key`
-+ `create_user`
-+ `create_time`
-+ `discription`
-+ `duration` `int`
-+ `upload_position`
-+ `language`
-+ `dialect` `geopoint`
-+ `oss_path` lead this to aliyun's oss
+CREATE TABLE IF NOT EXISTS `record` (
+    `rid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
+    `create_user` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
+    `create_time` TIMESTAMP NOT NULL,
+    `description` VARCHAR(2048) NOT NULL,
+    `duration` SMALLINT UNSIGNED NOT NULL COMMENT 'unit: second',
+    `upload_position` POINT NOT NULL,
+    `language` TINYINT NOT NULL COMMENT 'see Language under Enums',
+    `dialect` POINT,
+    `file_path` VARCHAR(64),
+    PRIMARY KEY (`rid`)
+)
 
 #### Comment
 
-+ `rid`
-+ `cid`
-+ `commenter_id`
-+ `reply_to_uid`
-+ `reply_to_cid` Comment tree can only be 2 in depth
+CREATE TABLE IF NOT EXISTS `comment` (
+    `cid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 8-digit rid hash, 10-digit timestamp',
+    `rid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
+    `commenter_user` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
+    `reply_to_user` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
+    `reply to comment` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 8-digit rid hash, 10-digit timestamp',
+    `create_time` TIMESTAMP NOT NULL,
+    PRIMARY KEY (`cid`)
+)
 
 #### Like
 
-+ `rid`
-+ `uid`
-+ `create_time`
+CREATE TABLE IF NOT EXISTS `like` (
+    `rid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
+    `uid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
+    `create_time` TIMESTAMP NOT NULL
+)
 
 #### Message
 
-+ `sender_id`
-+ `receiver_id`
-+ `create_time` maybe we need to design a time table 
-+ `is_read`
+CREATE TABLE IF NOT EXISTS `message` (
+    `sender_id` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
+    `receiver_id` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
+    `create_time` TIMESTAMP NOT NULL,
+    `is read` BOOL NOT NULL,
+    `type` TINYINT NOT NULL COMMENT 'see Message type in Enums',
+    `content` VARCHAR(2048) COMMENT 'text message',
+    `file_path` VARCHAR(64)
+)
 
 #### Hark
 
 Not core function, just count how long one person have listened on another person
 
-+ `listener_id`
-+ `listenee_id`
-+ `rid`
-+ `duration` `int`
+CREATE TABLE IF NOT EXISTS `hark` (
+    `listener_id` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
+    `listenee_id` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
+    `rid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
+    `duration` INT NOT NULL COMMENT 'unit: second'
+)
+
 
 #### Report
 
-in `MySQL`
 
-+ `report_id` `primary key`
-+ `rid`
-+ `reporter`
-+ `reportee`
-+ `report_time` `timestamp`
-+ `reason`
+CREATE TABLE IF NOT EXISTS `report` (
+    `rid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
+    `reporter` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
+    `reportee` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
+    `report_time` TIMESTAMP NOT NULL,
+    `reason` VARCHAR(64)
+)
 
 
 ## Questions Collection [/questions]
