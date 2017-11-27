@@ -73,26 +73,31 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 User can tag themselves. 
 
+```sql
 CREATE TABLE IF NOT EXISTS `tag` (
     `uid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `tag_type` TINYINT NOT NULL COMMENT 'see TagType in Enums',
     `value` VARCHAR(256) NOT NULL
 )
+```
 
 #### Medal
 
 Like achievements in Steam. We may need a schema file too generate description in the backend project.
 
+```sql
 CREATE TABLE IF NOT EXISTS `medal` (
     `uid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `title` VARCHAR(32) NOT NULL,
     `award_time` TIMESTAMP NOT NULL,
     `description` VARCHAR(256) NOT NULL
 )
+```
 
 
 #### Record
 
+```sql
 CREATE TABLE IF NOT EXISTS `record` (
     `rid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `create_user` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
@@ -105,9 +110,11 @@ CREATE TABLE IF NOT EXISTS `record` (
     `file_path` VARCHAR(64),
     PRIMARY KEY (`rid`)
 )
+```
 
 #### Comment
 
+```sql
 CREATE TABLE IF NOT EXISTS `comment` (
     `cid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 8-digit rid hash, 10-digit timestamp',
     `rid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
@@ -117,17 +124,21 @@ CREATE TABLE IF NOT EXISTS `comment` (
     `create_time` TIMESTAMP NOT NULL,
     PRIMARY KEY (`cid`)
 )
+```
 
 #### Like
 
+```sql
 CREATE TABLE IF NOT EXISTS `like` (
     `rid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `uid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `create_time` TIMESTAMP NOT NULL
 )
+```
 
 #### Message
 
+```sql
 CREATE TABLE IF NOT EXISTS `message` (
     `sender_id` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `receiver_id` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
@@ -137,22 +148,25 @@ CREATE TABLE IF NOT EXISTS `message` (
     `content` VARCHAR(2048) COMMENT 'text message',
     `file_path` VARCHAR(64)
 )
+```
 
 #### Hark
 
 Not core function, just count how long one person have listened on another person
 
+```sql
 CREATE TABLE IF NOT EXISTS `hark` (
     `listener_id` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `listenee_id` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `rid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `duration` INT NOT NULL COMMENT 'unit: second'
 )
+```
 
 
 #### Report
 
-
+```sql
 CREATE TABLE IF NOT EXISTS `report` (
     `rid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `reporter` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
@@ -160,6 +174,7 @@ CREATE TABLE IF NOT EXISTS `report` (
     `report_time` TIMESTAMP NOT NULL,
     `reason` VARCHAR(64)
 )
+```
 
 
 ## Questions Collection [/questions]
