@@ -63,8 +63,10 @@ CREATE TABLE IF NOT EXISTS `user` (
     `last_time_username_changed` TIMESTAMP NOT NULL,
     `language_first` TINYINT NOT NULL COMMENT 'mother tongue, see Language under Enums',
     `language_second` TINYINT NOT NULL,
-    `dialect_first` POINT COMMENT 'GCJ-02 for Chinese server, WCG-84 for overseas',
-    `dialect_second` POINT,
+    `dialect_first_x` DOUBLE,
+    `dialect_first_y` DOUBLE,
+    `dialect_second_x` DOUBLE,
+    `dialect_second_y` DOUBLE,
     PRIMARY KEY (`uid`)
 )
 ```
@@ -104,9 +106,11 @@ CREATE TABLE IF NOT EXISTS `record` (
     `create_time` TIMESTAMP NOT NULL,
     `description` VARCHAR(2048) NOT NULL,
     `duration` SMALLINT UNSIGNED NOT NULL COMMENT 'unit: second',
-    `upload_position` POINT NOT NULL,
+    `upload_position_x` DOUBLE,
+    `upload_position_y` DOUBLE,
     `language` TINYINT NOT NULL COMMENT 'see Language under Enums',
-    `dialect` POINT,
+    `dialect_x` DOUBLE,
+    `dialect_y` DOUBLE,
     `file_path` VARCHAR(64),
     PRIMARY KEY (`rid`)
 )
