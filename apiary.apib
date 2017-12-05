@@ -58,13 +58,13 @@ CREATE TABLE IF NOT EXISTS `user` (
     `phone` VARCHAR(16),
     `phone_confirmed` BOOL NOT NULL,
     `bio` VARCHAR(512) COMMENT 'simple discription for self',
-    `avatar_path` VARCHAR(64) COMMENT 'maybe lead this to aliyun's oss',
+    `avatar_path` VARCHAR(64) COMMENT 'maybe lead this to aliyuns oss',
     `create_time` TIMESTAMP NOT NULL,
     `last_time_username_changed` TIMESTAMP NOT NULL,
     `language_first` TINYINT NOT NULL COMMENT 'mother tongue, see Language under Enums',
     `language_second` TINYINT NOT NULL,
     `dialect_first` POINT COMMENT 'GCJ-02 for Chinese server, WCG-84 for overseas',
-    `dialect_second` POINT NOT,
+    `dialect_second` POINT,
     PRIMARY KEY (`uid`)
 )
 ```
