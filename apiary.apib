@@ -51,13 +51,13 @@ Sould we make Cantonese a language instead of a dialect?
 ```sql
 CREATE TABLE IF NOT EXISTS `user` (
     `uid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
-    `username` VARCHAR(64) NOT NULL COMMENT 'nickname can be edited, but not within a short period',
-    `password` VARCHAR(128) NOT NULL COMMENT 'encrypted password, maybe with bcrypt',
+    `username` VARCHAR(16) NOT NULL COMMENT 'nickname can be edited, but not within a short period',
+    `password` VARCHAR(32) NOT NULL COMMENT 'encrypted password, maybe with bcrypt',
     `email` VARCHAR(64),
     `email_confirmed` BOOL NOT NULL,
     `phone` VARCHAR(16),
     `phone_confirmed` BOOL NOT NULL,
-    `bio` VARCHAR(512) COMMENT 'simple discription for self',
+    `bio` VARCHAR(128) COMMENT 'simple discription for self',
     `avatar_path` VARCHAR(64) COMMENT 'maybe lead this to aliyuns oss',
     `create_time` TIMESTAMP NOT NULL,
     `last_time_username_changed` TIMESTAMP NOT NULL,
@@ -77,9 +77,11 @@ User can tag themselves.
 
 ```sql
 CREATE TABLE IF NOT EXISTS `tag` (
+    `tagId` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp', 
     `uid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `tag_type` TINYINT NOT NULL COMMENT 'see TagType in Enums',
-    `value` VARCHAR(256) NOT NULL
+    `value` VARCHAR(16) NOT NULL,
+    PRIMARY KEY (`tagId`)
 )
 ```
 
@@ -89,10 +91,12 @@ Like achievements in Steam. We may need a schema file too generate description i
 
 ```sql
 CREATE TABLE IF NOT EXISTS `medal` (
+    `medalId` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `uid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
-    `title` VARCHAR(32) NOT NULL,
+    `title` VARCHAR(16) NOT NULL,
     `award_time` TIMESTAMP NOT NULL,
-    `description` VARCHAR(256) NOT NULL
+    `description` VARCHAR(128) NOT NULL,
+    PRIMARY KEY (`medalId`)
 )
 ```
 
@@ -104,7 +108,7 @@ CREATE TABLE IF NOT EXISTS `record` (
     `rid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `create_user` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `create_time` TIMESTAMP NOT NULL,
-    `description` VARCHAR(2048) NOT NULL,
+    `description` VARCHAR(512) NOT NULL,
     `duration` SMALLINT UNSIGNED NOT NULL COMMENT 'unit: second',
     `upload_position_x` DOUBLE,
     `upload_position_y` DOUBLE,
@@ -136,7 +140,8 @@ CREATE TABLE IF NOT EXISTS `comment` (
 CREATE TABLE IF NOT EXISTS `like` (
     `rid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `uid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
-    `create_time` TIMESTAMP NOT NULL
+    `create_time` TIMESTAMP NOT NULL,
+    PRIMARY KEY (`rid`, `uid`)
 )
 ```
 
@@ -144,13 +149,15 @@ CREATE TABLE IF NOT EXISTS `like` (
 
 ```sql
 CREATE TABLE IF NOT EXISTS `message` (
+    `mid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `sender_id` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `receiver_id` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `create_time` TIMESTAMP NOT NULL,
     `is read` BOOL NOT NULL,
     `type` TINYINT NOT NULL COMMENT 'see Message type in Enums',
     `content` VARCHAR(2048) COMMENT 'text message',
-    `file_path` VARCHAR(64)
+    `file_path` VARCHAR(64),
+    PRIMARY KEY (`mid`)
 )
 ```
 
@@ -163,7 +170,8 @@ CREATE TABLE IF NOT EXISTS `hark` (
     `listener_id` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `listenee_id` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `rid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
-    `duration` INT NOT NULL COMMENT 'unit: second'
+    `duration` INT NOT NULL COMMENT 'unit: second',
+    PRIMARY KEY (`listener_id`, `listenee_id`, `rid`)
 )
 ```
 
@@ -172,11 +180,13 @@ CREATE TABLE IF NOT EXISTS `hark` (
 
 ```sql
 CREATE TABLE IF NOT EXISTS `report` (
+    `reportid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `rid` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `reporter` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `reportee` BIGINT UNSIGNED NOT NULL COMMENT '2-digit server number(00-18), 4-digit longitude, 4-digit latitude, 10-digit timestamp',
     `report_time` TIMESTAMP NOT NULL,
-    `reason` VARCHAR(64)
+    `reason` VARCHAR(32),
+    PRIMARY KEY (`reportid`)
 )
 ```
 
